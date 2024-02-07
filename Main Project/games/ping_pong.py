@@ -71,4 +71,21 @@ while True:
         player1_pos[1] += PAD_SPEED
     if keys[pygame.K_UP]:
         player2_pos[1] -= PAD_SPEED
-    if keys[pygame⬤
+    if keys[pygame.K_DOWN]:
+        player2_pos[1] += PAD_SPEED
+
+    # Ограничения для платформ
+    if player1_pos[1] <= 0:
+        player1_pos[1] = 0
+    elif player1_pos[1] >= HEIGHT - PAD_HEIGHT:
+        player1_pos[1] = HEIGHT - PAD_HEIGHT
+    if player2_pos[1] <= 0:
+        player2_pos[1] = 0
+    elif player2_pos[1] >= HEIGHT - PAD_HEIGHT:
+        player2_pos[1] = HEIGHT - PAD_HEIGHT
+
+    update()
+
+    draw(WINDOW)
+    pygame.display.update()
+    clock.tick(60)
