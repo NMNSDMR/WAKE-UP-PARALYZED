@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 
 # Инициализация Pygame
 pygame.init()
@@ -12,63 +13,51 @@ pygame.display.set_caption("Ping Pong")
 # Цвета
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+COLORS = [(255, 0, 0), (255, 165, 0), (255, 255, 0), (0, 128, 0), (0, 0, 255), (75, 0, 130), (238, 130, 238)]
 
-# Размеры платформ и мяча
+# Размеры платформ и надписи
 PAD_WIDTH, PAD_HEIGHT = 10, 100
-BALL_RADIUS = 10
+FONT_SIZE = 100
 
-# Скорость платформ и мяча
+# Скорость платформ и надписи
 PAD_SPEED = 5
-BALL_X_SPEED = 4
-BALL_Y_SPEED = 4
+FONT_SPEED = 2
 
 # Начальные позиции платформ
 player1_pos = [PAD_WIDTH, HEIGHT // 2 - PAD_HEIGHT // 2]
 player2_pos = [WIDTH - PAD_WIDTH * 2, HEIGHT // 2 - PAD_HEIGHT // 2]
 
-# Начальная позиция мяча
-ball_pos = [WIDTH // 2, HEIGHT // 2]
-ball_vel = [BALL_X_SPEED, BALL_Y_SPEED]
+# Начальная позиция надписи
+font_pos = [WIDTH // 2 - FONT_SIZE // 3, HEIGHT // 2 - FONT_SIZE // 2]
 
-# Функция отрисовки платформ и мяча
+# Начальная скорость надписи
+font_vel = [FONT_SPEED, FONT_SPEED]
+
+# Функция отрисовки платформ и надписи
 def draw(canvas):
     canvas.fill(BLACK)
     pygame.draw.rect(canvas, WHITE, (player1_pos[0], player1_pos[1], PAD_WIDTH, PAD_HEIGHT))
     pygame.draw.rect(canvas, WHITE, (player2_pos[0], player2_pos[1], PAD_WIDTH, PAD_HEIGHT))
-    pygame.draw.circle(canvas, WHITE, (int(ball_pos[0]), int(ball_pos[1])), BALL_RADIUS)
+    font_surface = font.render("DVD", True, random.choice(COLORS))
+    canvas.blit(font_surface, font_pos)
 
-# Обновление позиций платформ и мяча
+# Обновление позиций платформ и надписи
 def update():
-    global ball_pos, ball_vel, player1_pos, player2_pos
+    global font_pos, font_vel
 
-    # Обновление позиции мяча
-    ball_pos[0] += int(ball_vel[0])
-    ball_pos[1] += int(ball_vel[1])
+    # Обновление позиции надписи
+    font_pos[0] += int(font_vel[0])
+    font_pos[1] += int(font_vel[1])
 
-    # Отскок от верхней и нижней границ поля
-    if ball_pos[1] <= BALL_RADIUS or ball_pos[1] >= HEIGHT - BALL_RADIUS:
-        ball_vel[1] = -ball_vel[1]
-
-    # Отскок от платформ
-    if ball_pos[0] <= PAD_WIDTH + BALL_RADIUS:
-        if ball_pos[1] >= player1_pos[1] and ball_pos[1] <= player1_pos[1] + PAD_HEIGHT:
-            ball_vel[0] = -ball_vel[0]
-    elif ball_pos[0] >= WIDTH - PAD_WIDTH - BALL_RADIUS:
-        if ball_pos[1] >= player2_pos[1] and ball_pos[1] <= player2_pos[1] + PAD_HEIGHT:
-            ball_vel[0] = -ball_vel[0]
-
-    # Проверка на выход мяча за границы поля (гол)
-    if ball_pos[0] <= BALL_RADIUS or ball_pos[0] >= WIDTH - BALL_RADIUS:
-        reset()
-
-# Перезапуск игры после гола
-def reset():
-    global ball_pos, ball_vel
-    ball_pos = [WIDTH // 2, HEIGHT // 2]
-    ball_vel = [BALL_X_SPEED, BALL_Y_SPEED]
+    # Отскок от границ поля
+    if font_pos[0] <= 0 or font_pos[0] >= WIDTH - FONT_SIZE:
+        font_vel[0] = -font_vel[0]
+    if font_pos[1] <= 0 or font_pos[1] >= HEIGHT - FONT_SIZE:
+        font_vel[1] = -font_vel[1]
 
 # Основной игровой цикл
 clock = pygame.time.Clock()
+font = pygame.font.Font(None, FONT_SIZE)
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
